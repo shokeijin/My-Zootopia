@@ -5,14 +5,14 @@
     <title>Meine Zootopia</title>
     <style>
         body { font-family: sans-serif; }
-        .card { border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin: 16px; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); }
-        h3 { margin-top: 0; }
+        .cards { list-style: none; padding: 0; }
+        .cards__item { border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin: 16px; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
     <h1>Tiere in meiner Sammlung</h1>
-    <main>
+    <ul class="cards">
         __REPLACE_ANIMALS_INFO__
-    </main>
+    </ul>
 </body>
 </html>

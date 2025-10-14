@@ -4,9 +4,60 @@
     <meta charset="UTF-8">
     <title>Meine Zootopia</title>
     <style>
-        body { font-family: sans-serif; }
-        .cards { list-style: none; padding: 0; }
-        .cards__item { border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin: 16px; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); }
+        body {
+            font-family: sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+        }
+        .cards {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .cards__item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        .card__title {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        .card__scientific-name {
+            font-style: italic;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            display: block;
+            margin-bottom: 15px;
+        }
+        /* NEU: Styling für die Detail-Liste */
+        .card__details {
+            font-size: 0.95em;
+        }
+        .card__details ul {
+            list-style: none; /* Entfernt die Aufzählungspunkte */
+            padding: 0;
+            margin: 0;
+        }
+        .card__details li {
+            padding: 4px 0; /* Etwas Abstand zwischen den Einträgen */
+        }
+        .card__slogan {
+            font-style: italic;
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>

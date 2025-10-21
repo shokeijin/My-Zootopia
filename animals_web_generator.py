@@ -1,29 +1,11 @@
-import json
+import data_fetcher  # NEU: Importiert unser neues Modul
 
-
-def load_data(file_path):
-    """
-    Lädt Tierdaten aus einer JSON-Datei.
-    """
-    with open(file_path, "r", encoding="utf-8") as handle:
-        return json.load(handle)
-
-
-def get_unique_skin_types(animals_data):
-    """
-    Extrahiert eine sortierte Liste von einzigartigen skin_type-Werten.
-    """
-    skin_types = set()
-    for animal in animals_data:
-        skin_type = animal.get("characteristics", {}).get("skin_type")
-        if skin_type:
-            skin_types.add(skin_type)
-    return sorted(list(skin_types))
-
+# Die Funktion 'get_animals_data' wurde entfernt.
 
 def serialize_animal(animal):
     """
     Wandelt ein einzelnes Tier-Objekt in einen formatierten HTML-String um.
+    (Diese Funktion bleibt unverändert)
     """
     taxonomy = animal.get("taxonomy", {})
     characteristics = animal.get("characteristics", {})
@@ -54,53 +36,40 @@ def serialize_animal(animal):
 
 def main():
     """
-    Hauptfunktion: Zeigt dem Benutzer eine Auswahl an skin_type-Werten,
-    filtert die Daten entsprechend und generiert die Webseite.
+    Hauptfunktion: Fragt den Benutzer nach einem Tiernamen, ruft die Daten über den
+    data_fetcher ab und generiert eine entsprechende Webseite.
     """
-    animals_data = load_data('animals_data.json')
-    unique_types = get_unique_skin_types(animals_data)
-
-    print("Bitte wählen Sie einen Hauttyp (skin_type) aus der Liste:")
-    for i, skin_type in enumerate(unique_types):
-        print(f"  {i + 1}: {skin_type}")
-
-    try:
-        # --- HIER IST DIE KORREKTUR ---
-        # Der Backslash vor "Geben" wurde entfernt.
-        choice_index = int(input("Geben Sie die Nummer Ihrer Wahl ein: ")) - 1
-
-        if not 0 <= choice_index < len(unique_types):
-            print("\nFehler: Ungültige Nummer. Bitte starten Sie das Skript erneut.")
-            return
-        selected_skin_type = unique_types[choice_index]
-    except ValueError:
-        print("\nFehler: Ungültige Eingabe. Bitte geben Sie eine Zahl ein.")
+    animal_name = input("Geben Sie den Namen eines Tieres ein: ")
+    if not animal_name:
+        print("Es wurde kein Tiername eingegeben.")
         return
 
-    print(f"\nFiltere nach Tieren mit dem Hauttyp: '{selected_skin_type}'...")
+    # --- GEÄNDERT: Ruft die Daten jetzt aus dem data_fetcher-Modul ab ---
+    animals_data = data_fetcher.fetch_data(animal_name)
 
-    filtered_animals = [
-        animal for animal in animals_data
-        if animal.get("characteristics", {}).get("skin_type") == selected_skin_type
-    ]
-
-    if not filtered_animals:
-        print("Keine Tiere mit diesem Hauttyp gefunden. Es wird keine Webseite erstellt.")
+    if animals_data is None:
+        print("Die Webseite konnte nicht erstellt werden.")
         return
 
     with open("animals_template.html", "r", encoding="utf-8") as file:
         template_content = file.read()
 
-    all_animals_html = [serialize_animal(animal) for animal in filtered_animals]
-    animals_html_block = "\n".join(all_animals_html)
+    output_filename = "animals.html"
 
-    final_html = template_content.replace("__REPLACE_ANIMALS_INFO__", animals_html_block)
+    if not animals_data:
+        error_message = f'<h2>Das Tier "{animal_name}" existiert nicht.</h2>'
+        final_html = template_content.replace("__REPLACE_ANIMALS_INFO__", error_message)
+        print(
+            f'Das Tier "{animal_name}" wurde nicht gefunden. Eine entsprechende Nachricht wird in der HTML-Datei angezeigt.')
+    else:
+        all_animals_html = [serialize_animal(animal) for animal in animals_data]
+        animals_html_block = "\n".join(all_animals_html)
+        final_html = template_content.replace("__REPLACE_ANIMALS_INFO__", animals_html_block)
 
-    output_filename = f"animals_{selected_skin_type.lower().replace(' ', '_')}.html"
     with open(output_filename, "w", encoding="utf-8") as file:
         file.write(final_html)
 
-    print(f"Erfolg! Die Datei '{output_filename}' wurde mit {len(filtered_animals)} Tier(en) erstellt.")
+    print(f"Erfolg! Die Webseite wurde erfolgreich in der Datei '{output_filename}' generiert.")
 
 
 if __name__ == "__main__":
